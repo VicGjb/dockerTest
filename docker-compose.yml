@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  frontend:
+    user: ${UID?err}:${GID?err} #имя пользователя и группы в нутри докера, равные мимени пользователя на локальной машине
+    image: node:latest
+    hostname: frontend  #Кастомное навание хоста
+    container_name: frontend #имя контейнера которое понимет докерв
+    ports:
+      - "5000:5000"
+    # environment:
+      # - name=value
+    tty: true #контейнер живет до явногой команды отключиться
+    volumes:
+      - ./frontend:/app  #общая папка для локальной машини и контейнера
+    depends_on:   #зависимость он другого докера
+      - backend  
+
+  backend:
+    user: ${UID?err}:${GID?err} 
+    image: python:latest
+    dockerfile: ./Test_project/Dockerfile
+    hostname: backend
+    container_name: backend
+    ports:
+      - "8000:8000"   
+    tty: true
+    volumes:
+      - ./Test_project:/app
+    depends_on:
+      - database
+
+  database:
+    # user: ${UID?err}:${GID?err}
+    image: postgres:latest
+    hostname: database
+    container_name: database
+    ports:
+      - "5432:5432"
+    tty: true
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  pgadmin:
+    image: dpage/pgadmin4
+    hostname: pgadmin
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+
+    environment:
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+
+
+
+
+    
+
+    
