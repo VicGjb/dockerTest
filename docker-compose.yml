@@ -18,7 +18,7 @@ services:
 
   backend:
     user: ${UID?err}:${GID?err} 
-    image: python:latest
+    #image: python:latest
     dockerfile: ./Test_project/Dockerfile
     hostname: backend
     container_name: backend
